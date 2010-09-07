@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+Command line utility for quickly generating self-hosted web-applications for
+FluidDB
+
+(c) 2010 FluidInfo Inc.
+"""
+from flow.core.management import CommandHandler
+
+if __name__ == "__main__":
+    c = CommandHandler()
+    c.run_command()
