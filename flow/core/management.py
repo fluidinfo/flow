@@ -74,62 +74,6 @@ class BaseCommand(object):
         """
         raise NotImplementedError()
 
-class LaxOptionParser(OptionParser):
-    """
-    BORROWED FROM DJANGO
-
-    An option parser that doesn't raise any errors on unknown options.
-
-    This is needed because the --settings and --pythonpath options affect
-    the commands (and thus the options) that are available to the user.
-    """
-    def error(self, msg):
-        pass
-
-    def print_help(self):
-        """Output nothing.
-
-        The lax options are included in the normal option parser, so under
-        normal usage, we don't need to print the lax options.
-        """
-        pass
-
-    def print_lax_help(self):
-        """Output the basic options available to every command.
-
-        This just redirects to the default print_help() behaviour.
-        """
-        OptionParser.print_help(self)
-
-    def _process_args(self, largs, rargs, values):
-        """
-        Overrides OptionParser._process_args to exclusively handle default
-        options and ignore args and other options.
-
-        This overrides the behavior of the super class, which stop parsing
-        at the first unrecognized option.
-        """
-        while rargs:
-            arg = rargs[0]
-            try:
-                if arg[0:2] == "--" and len(arg) > 2:
-                    # process a single long option (possibly with value(s))
-                    # the superclass code pops the arg off rargs
-                    self._process_long_opt(rargs, values)
-                elif arg[:1] == "-" and len(arg) > 1:
-                    # process a cluster of short options (possibly with
-                    # value(s) for the last one only)
-                    # the superclass code pops the arg off rargs
-                    self._process_short_opts(rargs, values)
-                else:
-                    # it's either a non-default option or an arg
-                    # either way, add it to the args list so we can keep
-                    # dealing with options
-                    del rargs[0]
-                    raise Exception
-            except:
-                largs.append(arg)
-
 def find_commands(directory):
     """
     Given a directory will list all the python modules in the directory
@@ -230,7 +174,7 @@ class CommandHandler(object):
         """
         Attempt to find and run the command
         """
-        parser = LaxOptionParser(usage="%prog subcommand [options] [args]",
+        parser = OptionParser(usage="%prog subcommand [options] [args]",
                               version=VERSION)
 
         try:
@@ -250,39 +194,3 @@ class CommandHandler(object):
                 sys.stderr.write(self.help() + '\n')
         elif not "--version" in args:
             self.fetch_command(subcommand).run_from_argv(self.argv)
-
-def start_flow():
-    description = "A command line utility for quickly generating self-hosted"\
-        " web-applications on FluidDB in the current directory. Pass in the"\
-        " name of the new project as the only argument."
-    if len(argv) != 2:
-        stderr.write("Error: one argument only (the name of the new project.\n")
-        exit(1)
-    if argv[1] == "help":
-        stdout.write("%s\n\n" % (description))
-    elif argv[1] == "version":
-        stdout.write("%s\n\n" % VERSION)
-    else:
-        # actually create the new project in the current directory
-        pass
-
-def manage(settings):
-    description = "A command line utility for managing a self-hosted web-"\
-        "application built for FluidDB"
-    parser = OptionParser(version=VERSION,
-        description=description)
-    parser.add_option("push", help="Builds the application and pushes it to"\
-        "FluidDB.")
-    parser.add_option("-c", "--create",
-        help="Create a new 'app'. One of 'default' [default], 'edit',"\
-        " 'explore', 'geo', 'minimal', 'search'", type="choice",
-        choices=['default', 'edit', 'explore', 'geo', 'minimal', 'search'],
-        default='default')
-    parser.add_option("-d", "--data",
-        help="Import data into FluidDB based upon the template objects"\
-        " defined in the projects objects.py module")
-    parser.add_option("build",
-        help="Build the application (without pushing to FluidDB)")
-    parser.add_option("test", help="Attempt to run the test suite")
-
-    (options, args) = parser.parse_args()
