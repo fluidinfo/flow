@@ -43,14 +43,11 @@ for dirpath, dirnames, filenames in os.walk(flow_dir):
     elif filenames:
         data_files.append([dirpath, [os.path.join(dirpath, f) for f in filenames]])
 
-# Dynamically calculate the version based on flow.VERSION.
-version = __import__('flow').get_version()
-
 setup(
     name='flow',
     author='Fluidinfo Inc',
     author_email='dev@fluidinfo.com',
-    version=version,
+    version=0.1,
     requires=['fom', 'flimp', 'jinja2'],
     url='http://fluidinfo.com/',
     description='A small framework for writing self-hosted (web) applications for FluidDB',

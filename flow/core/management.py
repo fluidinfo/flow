@@ -11,8 +11,6 @@ import os
 import flow
 from flow.core import __path__
 
-VERSION = flow.get_version()
-
 class CommandError(Exception):
     """
     Thrown when a command fails
@@ -174,8 +172,7 @@ class CommandHandler(object):
         """
         Attempt to find and run the command
         """
-        parser = OptionParser(usage="%prog subcommand [options] [args]",
-                              version=VERSION)
+        parser = OptionParser(usage="%prog subcommand [options] [args]")
 
         try:
             options, args = parser.parse_args(self.argv)
