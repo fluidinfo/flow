@@ -92,43 +92,6 @@ def get_commands():
     # I hope to allow users to add their own commands to projects
     return dict([(name, 'flow.core.commands') for name in find_commands(__path__[0])])
 
-# The following two functions are taken ultimately from Python 2.7 by way of
-# Django
-
-def _resolve_name(name, package, level):
-    """Return the absolute name of the module to be imported."""
-    if not hasattr(package, 'rindex'):
-        raise ValueError("'package' not set to a string")
-    dot = len(package)
-    for x in xrange(level, 1, -1):
-        try:
-            dot = package.rindex('.', 0, dot)
-        except ValueError:
-            raise ValueError("attempted relative import beyond top-level "
-                              "package")
-    return "%s.%s" % (package[:dot], name)
-
-
-def import_module(name, package=None):
-    """Import a module.
-
-    The 'package' argument is required when performing a relative import. It
-    specifies the package to use as the anchor point from which to resolve the
-    relative import to an absolute import.
-
-    """
-    if name.startswith('.'):
-        if not package:
-            raise TypeError("relative imports require the 'package' argument")
-        level = 0
-        for character in name:
-            if character != '.':
-                break
-            level += 1
-        name = _resolve_name(name[level:], package, level)
-    __import__(name)
-    return sys.modules[name]
-
 class CommandHandler(object):
     """
     Encapsulates all the behaviour required for loading, processing and
@@ -191,3 +154,40 @@ class CommandHandler(object):
                 sys.stderr.write(self.help() + '\n')
         elif not "--version" in args:
             self.fetch_command(subcommand).run_from_argv(self.argv)
+
+# The following two functions are taken ultimately from Python 2.7 by way of
+# Django
+
+def _resolve_name(name, package, level):
+    """Return the absolute name of the module to be imported."""
+    if not hasattr(package, 'rindex'):
+        raise ValueError("'package' not set to a string")
+    dot = len(package)
+    for x in xrange(level, 1, -1):
+        try:
+            dot = package.rindex('.', 0, dot)
+        except ValueError:
+            raise ValueError("attempted relative import beyond top-level "
+                              "package")
+    return "%s.%s" % (package[:dot], name)
+
+
+def import_module(name, package=None):
+    """Import a module.
+
+    The 'package' argument is required when performing a relative import. It
+    specifies the package to use as the anchor point from which to resolve the
+    relative import to an absolute import.
+
+    """
+    if name.startswith('.'):
+        if not package:
+            raise TypeError("relative imports require the 'package' argument")
+        level = 0
+        for character in name:
+            if character != '.':
+                break
+            level += 1
+        name = _resolve_name(name[level:], package, level)
+    __import__(name)
+    return sys.modules[name]

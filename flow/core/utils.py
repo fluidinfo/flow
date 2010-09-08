@@ -5,12 +5,6 @@ Generic utility classes and functions used by flow
 import os
 import sys
 import re
-import shutil
-import logging
-if sys.version_info < (2, 6):
-    import simplejson as json
-else:
-    import json
 import flow
 
 def copy_template(source, target, name, context):
@@ -44,9 +38,8 @@ def copy_template(source, target, name, context):
             if subdir.startswith('.'):
                 del subdirs[i]
         for f in files:
-            # ToDo NEEDS CHECKING SO WE CAN COPY JS AND HTML SOURCE CODE
-            if not (f.endswith('.py') or f.endswith('.js')
-                or f.endswith('.html') or f.endswith('.css')):
+            root, extension = os.path.splitext(f)
+            if extension not in flow.VALID_TEMPLATE_EXTENSIONS:
                 # Ignore .pyc, .pyo, .py.class etc, as they cause various
                 # breakages. We only want python, html, js or css source files
                 # copied over
@@ -61,35 +54,3 @@ def copy_template(source, target, name, context):
             fp_new.write(fp_old.read())
             fp_old.close()
             fp_new.close()
-            try:
-                shutil.copymode(path_old, path_new)
-                _make_writeable(path_new)
-            except OSError:
-                sys.stderr.write(style.NOTICE("Notice: Couldn't set permission bits on %s. You're probably using an uncommon filesystem setup. No problem.\n" % path_new))
-
-def _make_writeable(filename):
-    """
-    Make sure that the file is writeable. Useful if our source is
-    read-only.
-
-    Borrowed from  Django
-    """
-    import stat
-    if sys.platform.startswith('java'):
-        # On Jython there is no os.access()
-        return
-    if not os.access(filename, os.W_OK):
-        st = os.stat(filename)
-        new_permissions = stat.S_IMODE(st.st_mode) | stat.S_IWUSR
-        os.chmod(filename, new_permissions)
-
-def generate(source, target):
-    """
-    Given the source directory will use Jinja2 to generate HTML (and possibly JS
-    or CSS) from templates and create the resulting raw web-application in the
-    target directory.
-
-    The contents of the target directory *should* be in such a state that they
-    can be "pushed" to FluidDB (see below).
-    """
-    pass
