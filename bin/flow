@@ -6,7 +6,7 @@ FluidDB
 
 (c) 2010 FluidInfo Inc.
 """
-from flow.core.management import CommandHandler
+from flow.command import CommandHandler
 
 if __name__ == "__main__":
     c = CommandHandler()

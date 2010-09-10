@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from flow.core.management import BaseCommand
-from flow.core.utils import copy_template
+from flow.command import BaseCommand, CommandError
+from flow.utils import copy_template
 import os
 
 class Command(BaseCommand):

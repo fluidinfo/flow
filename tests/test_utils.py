@@ -2,7 +2,7 @@ import os
 import unittest
 import shutil
 
-from flow.core.utils import copy_template
+from flow.utils import copy_template
 
 class TestUtils(unittest.TestCase):
 

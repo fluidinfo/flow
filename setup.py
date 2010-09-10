@@ -5,6 +5,7 @@ from distutils.core import setup
 from distutils.command.install import INSTALL_SCHEMES
 import os
 import sys
+from flow import VERSION
 
 def fullsplit(path, result=None):
     """
@@ -47,7 +48,7 @@ setup(
     name='flow',
     author='Fluidinfo Inc',
     author_email='dev@fluidinfo.com',
-    version=0.1,
+    version=VERSION,
     requires=['fom', 'flimp', 'jinja2'],
     url='http://fluidinfo.com/',
     description='A small framework for writing self-hosted (web) applications for FluidDB',

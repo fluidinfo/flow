@@ -8,8 +8,7 @@ implemented in Django.
 from optparse import OptionParser
 import sys
 import os
-import flow
-from flow.core import __path__
+from flow import __path__, VERSION
 
 class CommandError(Exception):
     """
@@ -55,16 +54,10 @@ class BaseCommand(object):
         """
         parser = self.get_parser(argv[0], argv[1])
         options, args = parser.parse_args(argv[2:])
-        self.execute(*args, **options.__dict__)
-
-    def execute(self, *args, **options):
-        """
-        Executes the command in a "clean" fashion (wrapped in try/except)
-        """
         try:
-            self.handle(*args, **options)
+            self.handle(*args, **options.__dict__)
         except CommandError, e:
-            sys.stderr.write("Error: %s\n" % e)
+            sys.stderr.write("Error: %s\n" %e)
 
     def handle(self, *args, **options):
         """
@@ -88,9 +81,9 @@ def get_commands():
     """
     Populates a dictionary with all the available commands it can find
     """
-    # so far only commands specified in flow.core should be loaded. In future
+    # so far only commands specified in flow.commands should be loaded. In future
     # I hope to allow users to add their own commands to projects
-    return dict([(name, 'flow.core.commands') for name in find_commands(__path__[0])])
+    return dict([(name, 'flow.commands') for name in find_commands(__path__[0])])
 
 class CommandHandler(object):
     """
@@ -135,12 +128,16 @@ class CommandHandler(object):
         """
         Attempt to find and run the command
         """
-        parser = OptionParser(usage="%prog subcommand [options] [args]")
+        # We don't want OptionParser dealing with help in the usual way. This
+        # solution smells. ToDo: Make this better
+        for i in range(len(self.argv)):
+            arg = self.argv[i].replace('-', '')
+            if arg == 'h' or arg == 'help':
+                self.argv[i] = 'help'
 
-        try:
-            options, args = parser.parse_args(self.argv)
-        except:
-            pass # ignore errors for now
+        parser = OptionParser(usage="%prog subcommand [options] [args]",
+            version=VERSION)
+        options, args = parser.parse_args(self.argv)
 
         try:
             subcommand = self.argv[1]
@@ -170,7 +167,6 @@ def _resolve_name(name, package, level):
             raise ValueError("attempted relative import beyond top-level "
                               "package")
     return "%s.%s" % (package[:dot], name)
-
 
 def import_module(name, package=None):
     """Import a module.

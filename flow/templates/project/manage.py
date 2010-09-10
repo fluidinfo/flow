@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from flow.core.management import CommandHandler
+from flow.command import CommandHandler
 
 try:
     import settings # assuming it's in the same directory
