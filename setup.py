@@ -51,7 +51,7 @@ setup(
     version=VERSION,
     requires=['fom', 'flimp', 'jinja2'],
     url='http://fluidinfo.com/',
-    description='A small framework for writing self-hosted (web) applications for FluidDB',
+    description='A small framework for writing self-hosted web applications for FluidDB',
     long_description=open('README.rst').read(),
     packages = packages,
     data_files = data_files,
