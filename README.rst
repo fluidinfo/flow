@@ -36,7 +36,7 @@ So far there is a scaffolding in place for creating a suite of command-line util
 
 The resulting files are for illustrative purposes. Nevertheless they'll work in the following ways:
 
-* **manage.py** - a command-line utility used to interract with your project and FluidDB. For example, one might issue `./manage.py push` to build and deploy the application to FluidDB.
+* **manage.py** - a command-line utility used to interact with your project and FluidDB. For example, one might issue `./manage.py push` to build and deploy the application to FluidDB.
 * **objects.py** - not sure about this one but it'd be where you use fom to specify the sort of objects and related fields your application will be using. I'm toying with the idea of generating javascript data-structures from these.
 * **settings.py** - I'm not entirely convinced about this one either, but settings.py is where you store application settings.
 
