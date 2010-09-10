@@ -47,8 +47,8 @@ You might be thinking that this is a lot like the workflow used in Django or Rub
 In terms of the layers involved in the flow stack here's how things look in my mind's eye (subject to change):
 
 * **flow** - manages the high level stuff with the aim of keeping the nitty-gritty details of interracting with FluidDB hidden from the developer. We want the developer to concentrate on their application rather than FluidDB. Flow sits upon flimp.
-* **`flimp <http://github.com/fluidinfo/flimp>`_** - is used to import the resulting application and any related data into FluidDB. Flimp sits upon fom.
-* **`fom <http://http://bitbucket.org/aafshar/fom-main>`_** - the Fluid Object Mapper by Ali Afshar is used to communicate directly with FluidDB.
+* `flimp <http://github.com/fluidinfo/flimp>`_ - is used to import the resulting application and any related data into FluidDB. Flimp sits upon fom.
+* `fom <http://http://bitbucket.org/aafshar/fom-main>`_ - the Fluid Object Mapper by Ali Afshar is used to communicate directly with FluidDB.
 
 When
 +++++
