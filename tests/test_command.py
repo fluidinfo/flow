@@ -153,9 +153,9 @@ class TestCommandHandler(unittest.TestCase):
             # cwd and find the correct files in there
             self.assertTrue(os.path.exists(project_name))
             self.assertTrue(os.path.isdir(project_name))
-            manage_path = os.path.join(project_name, 'manage.py')
-            self.assertTrue(os.path.exists(manage_path))
-            self.assertTrue(os.path.isfile(manage_path))
+            settings_path = os.path.join(project_name, 'settings.py')
+            self.assertTrue(os.path.exists(settings_path))
+            self.assertTrue(os.path.isfile(settings_path))
         finally:
             # tidy up
             path = os.path.abspath(project_name)

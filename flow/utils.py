@@ -5,6 +5,9 @@ Generic utility classes and functions used by flow
 import os
 import sys
 import re
+
+from jinja2 import Environment, FileSystemLoader
+
 import flow
 
 def copy_template(source, target, name, context):
@@ -30,10 +33,12 @@ def copy_template(source, target, name, context):
     target_directory = os.path.join(target, name)
     os.mkdir(target_directory)
     template_dir = os.path.join(flow.__path__[0], 'templates', source)
+    # set up the Jinja2 environment
+    env = Environment(loader=FileSystemLoader(template_dir))
     for d, subdirs, files in os.walk(template_dir):
         relative_dir = d[len(template_dir)+1:].replace(target, name)
         if relative_dir:
-            os.mkdir(os.path.join(target_dir, relative_dir))
+            os.mkdir(os.path.join(target_directory, relative_dir))
         for i, subdir in enumerate(subdirs):
             if subdir.startswith('.'):
                 del subdirs[i]
@@ -44,13 +49,14 @@ def copy_template(source, target, name, context):
                 # breakages. We only want python, html, js or css source files
                 # copied over
                 continue
-            path_old = os.path.join(d, f)
+            template_path = os.path.join(d, f).replace(template_dir, '')
+            #path_old = os.path.join(d, f)
+            #fp_old = open(path_old, 'r')
+            template = env.get_template(template_path)
             path_new = os.path.join(target_directory, relative_dir, f.replace(target, name))
-            fp_old = open(path_old, 'r')
             fp_new = open(path_new, 'w')
             # ToDo Add Jinja template processing here... better than simple
             # call to replace()
             #fp_new.write(fp_old.read().replace('{{ name }}', name))
-            fp_new.write(fp_old.read())
-            fp_old.close()
+            fp_new.write(template.render(context))
             fp_new.close()
